@@ -144,6 +144,7 @@ function SecurityPage() {
                       placeholder={t("old_password")}
                       className="w-full"
                       hasError={Boolean(errors.old_password)}
+                      autoComplete="current-password"
                     />
                   )}
                 />
@@ -184,6 +185,7 @@ function SecurityPage() {
                     hasError={Boolean(errors.new_password)}
                     onFocus={() => setIsPasswordInputFocused(true)}
                     onBlur={() => setIsPasswordInputFocused(false)}
+                    autoComplete="new-password"
                   />
                 )}
               />
@@ -226,6 +228,7 @@ function SecurityPage() {
                     hasError={Boolean(errors.confirm_password)}
                     onFocus={() => setIsRetryPasswordInputFocused(true)}
                     onBlur={() => setIsRetryPasswordInputFocused(false)}
+                    autoComplete="new-password"
                   />
                 )}
               />

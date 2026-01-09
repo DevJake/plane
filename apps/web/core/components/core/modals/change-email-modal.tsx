@@ -158,6 +158,7 @@ export const ChangeEmailModal = observer(function ChangeEmailModal(props: Props)
                   { "border-danger-strong": errors.email },
                   { "cursor-not-allowed !bg-surface-2": secondStep }
                 )}
+                autoComplete="off"
                 disabled={secondStep}
               />
             )}
@@ -181,6 +182,7 @@ export const ChangeEmailModal = observer(function ChangeEmailModal(props: Props)
                   ref={ref}
                   placeholder={changeEmailT("form.code.placeholder")}
                   className={cn({ "border-danger-strong": errors.code })}
+                  autoComplete="off"
                   autoFocus
                 />
               )}

@@ -140,7 +140,7 @@ export function InstanceSignInForm() {
                 placeholder="name@company.com"
                 value={formData.email}
                 onChange={(e) => handleFormChange("email", e.target.value)}
-                autoComplete="on"
+                autoComplete="off"
                 autoFocus
               />
             </div>
@@ -159,7 +159,7 @@ export function InstanceSignInForm() {
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={(e) => handleFormChange("password", e.target.value)}
-                  autoComplete="on"
+                  autoComplete="off"
                 />
                 {showPassword ? (
                   <button
