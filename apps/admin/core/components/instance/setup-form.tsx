@@ -7,7 +7,7 @@ import { API_BASE_URL, E_PASSWORD_STRENGTH } from "@plane/constants";
 import { Button } from "@plane/propel/button";
 import { AuthService } from "@plane/services";
 import { Checkbox, Input, PasswordStrengthIndicator, Spinner } from "@plane/ui";
-import { getPasswordStrength } from "@plane/utils";
+import { getPasswordStrength, validatePersonName, validateCompanyName } from "@plane/utils";
 // components
 import { AuthHeader } from "@/app/(all)/(home)/auth-header";
 import { Banner } from "@/components/common/banner";
@@ -167,9 +167,15 @@ export function InstanceSetupForm() {
                   inputSize="md"
                   placeholder="Wilber"
                   value={formData.first_name}
-                  onChange={(e) => handleFormChange("first_name", e.target.value)}
-                  autoComplete="on"
+                  onChange={(e) => {
+                    const validation = validatePersonName(e.target.value);
+                    if (validation === true || e.target.value === "") {
+                      handleFormChange("first_name", e.target.value);
+                    }
+                  }}
+                  autoComplete="off"
                   autoFocus
+                  maxLength={50}
                 />
               </div>
               <div className="w-full space-y-1">
@@ -184,8 +190,14 @@ export function InstanceSetupForm() {
                   inputSize="md"
                   placeholder="Wright"
                   value={formData.last_name}
-                  onChange={(e) => handleFormChange("last_name", e.target.value)}
-                  autoComplete="on"
+                  onChange={(e) => {
+                    const validation = validatePersonName(e.target.value);
+                    if (validation === true || e.target.value === "") {
+                      handleFormChange("last_name", e.target.value);
+                    }
+                  }}
+                  autoComplete="off"
+                  maxLength={50}
                 />
               </div>
             </div>
@@ -223,7 +235,13 @@ export function InstanceSetupForm() {
                 inputSize="md"
                 placeholder="Company name"
                 value={formData.company_name}
-                onChange={(e) => handleFormChange("company_name", e.target.value)}
+                onChange={(e) => {
+                  const validation = validateCompanyName(e.target.value, false);
+                  if (validation === true || e.target.value === "") {
+                    handleFormChange("company_name", e.target.value);
+                  }
+                }}
+                maxLength={80}
               />
             </div>
 

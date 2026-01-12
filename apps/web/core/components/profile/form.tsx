@@ -23,6 +23,8 @@ import { handleCoverImageChange } from "@/helpers/cover-image.helper";
 // hooks
 import { useInstance } from "@/hooks/store/use-instance";
 import { useUser, useUserProfile } from "@/hooks/store/user";
+// utils
+import { validatePersonName, validateDisplayName } from "@plane/utils";
 
 type TUserProfileForm = {
   avatar_url: string;
@@ -255,6 +257,7 @@ export const ProfileForm = observer(function ProfileForm(props: TProfileFormProp
                   name="first_name"
                   rules={{
                     required: "Please enter first name",
+                    validate: validatePersonName,
                   }}
                   render={({ field: { value, onChange, ref } }) => (
                     <Input
@@ -267,7 +270,7 @@ export const ProfileForm = observer(function ProfileForm(props: TProfileFormProp
                       hasError={Boolean(errors.first_name)}
                       placeholder="Enter your first name"
                       className={`w-full rounded-md ${errors.first_name ? "border-danger-strong" : ""}`}
-                      maxLength={24}
+                      maxLength={50}
                       autoComplete="on"
                     />
                   )}
@@ -279,6 +282,9 @@ export const ProfileForm = observer(function ProfileForm(props: TProfileFormProp
                 <Controller
                   control={control}
                   name="last_name"
+                  rules={{
+                    validate: validatePersonName,
+                  }}
                   render={({ field: { value, onChange, ref } }) => (
                     <Input
                       id="last_name"
@@ -290,11 +296,12 @@ export const ProfileForm = observer(function ProfileForm(props: TProfileFormProp
                       hasError={Boolean(errors.last_name)}
                       placeholder="Enter your last name"
                       className="w-full rounded-md"
-                      maxLength={24}
+                      maxLength={50}
                       autoComplete="on"
                     />
                   )}
                 />
+                {errors.last_name && <span className="text-11 text-danger-primary">{errors.last_name.message}</span>}
               </div>
               <div className="flex flex-col gap-1">
                 <h4 className="text-13 font-medium text-secondary">
@@ -306,14 +313,7 @@ export const ProfileForm = observer(function ProfileForm(props: TProfileFormProp
                   name="display_name"
                   rules={{
                     required: "Display name is required.",
-                    validate: (value) => {
-                      if (value.trim().length < 1) return "Display name can't be empty.";
-                      if (value.split("  ").length > 1) return "Display name can't have two consecutive spaces.";
-                      if (value.replace(/\s/g, "").length < 1) return "Display name must be at least 1 character long.";
-                      if (value.replace(/\s/g, "").length > 20)
-                        return "Display name must be less than 20 characters long.";
-                      return true;
-                    },
+                    validate: validateDisplayName,
                   }}
                   render={({ field: { value, onChange, ref } }) => (
                     <Input
@@ -326,7 +326,7 @@ export const ProfileForm = observer(function ProfileForm(props: TProfileFormProp
                       hasError={Boolean(errors?.display_name)}
                       placeholder="Enter your display name"
                       className={`w-full ${errors?.display_name ? "border-danger-strong" : ""}`}
-                      maxLength={24}
+                      maxLength={50}
                     />
                   )}
                 />
