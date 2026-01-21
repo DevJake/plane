@@ -5,11 +5,9 @@
       "@/*": ["./core/*"],
       "@/app/*": ["./app/*"],
       "@/helpers/*": ["./helpers/*"],
-      "@/plane-web/*": ["./ce/*"],
       "@/styles/*": ["./styles/*"],
       "app/*": ["./app/*"],
       "package.json": ["./package.json"],
-      "ce/*": ["./ce/*"]
     },
     "strictNullChecks": true,
     "exactOptionalPropertyTypes": false,
