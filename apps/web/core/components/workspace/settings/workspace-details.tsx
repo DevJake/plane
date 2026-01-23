@@ -9,7 +9,7 @@ import { EditIcon } from "@plane/propel/icons";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { IWorkspace } from "@plane/types";
 import { CustomSelect, Input } from "@plane/ui";
-import { copyUrlToClipboard, getFileURL, validateWorkspaceName } from "@plane/utils";
+import { copyUrlToClipboard, getFileURL, validateWorkspaceName, cn } from "@plane/utils";
 // components
 import { WorkspaceImageUploadModal } from "@/components/core/modals/workspace-image-upload-modal";
 import { TimezoneSelect } from "@/components/global/timezone-select";
