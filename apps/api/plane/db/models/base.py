@@ -8,10 +8,15 @@ import uuid
 from django.db import models
 
 # Third party imports
+import pytz
 from crum import get_current_user
 
 # Module imports
 from ..mixins import AuditModel
+
+
+def timezone_choices():
+    return tuple(zip(pytz.common_timezones, pytz.common_timezones))
 
 
 class BaseModel(AuditModel):

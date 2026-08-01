@@ -1,4 +1,6 @@
-FROM python:3.12.10-alpine
+FROM python:3.14.4-alpine
+
+COPY --from=ghcr.io/astral-sh/uv:0.12.1 /uv /uvx /bin/
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -18,11 +20,10 @@ RUN apk add --no-cache --upgrade \
     "ca-certificates" \
     "openssl"
 
-COPY requirements.txt ./
-COPY requirements ./requirements
+COPY pyproject.toml uv.lock ./
 RUN apk add --no-cache libffi-dev
 RUN apk add --no-cache --virtual .build-deps \
-    "bash~=5.2" \
+    "bash~=5.3" \
     "g++" \
     "gcc" \
     "cargo" \
@@ -32,7 +33,11 @@ RUN apk add --no-cache --virtual .build-deps \
     "libc-dev" \
     "linux-headers" \
     && \
-    pip install -r requirements.txt --compile --no-cache-dir \
+    uv export --frozen --no-default-groups --no-emit-project --output-file /tmp/plane-api.lock \
+    && \
+    uv pip install --system --strict --compile-bytecode --no-cache --requirements /tmp/plane-api.lock \
+    && \
+    rm /tmp/plane-api.lock \
     && \
     apk del .build-deps \
     && \
@@ -45,7 +50,7 @@ COPY plane plane/
 COPY templates templates/
 COPY package.json package.json
 
-RUN apk --no-cache add "bash~=5.2"
+RUN apk --no-cache add "bash~=5.3"
 COPY ./bin ./bin/
 
 RUN mkdir -p /code/plane/logs

@@ -3,7 +3,6 @@
 # See the LICENSE file for details.
 
 # Python imports
-import pytz
 from typing import Optional, Any
 
 # Django imports
@@ -12,7 +11,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 # Module imports
-from .base import BaseModel
+from .base import BaseModel, timezone_choices
 from plane.utils.constants import RESTRICTED_WORKSPACE_SLUGS
 from plane.utils.color import get_random_color
 
@@ -117,8 +116,6 @@ def slug_validator(value):
 
 
 class Workspace(BaseModel):
-    TIMEZONE_CHOICES = tuple(zip(pytz.common_timezones, pytz.common_timezones))
-
     name = models.CharField(max_length=80, verbose_name="Workspace Name")
     logo = models.TextField(verbose_name="Logo", blank=True, null=True)
     logo_asset = models.ForeignKey(
@@ -135,7 +132,7 @@ class Workspace(BaseModel):
     )
     slug = models.SlugField(max_length=48, db_index=True, unique=True, validators=[slug_validator])
     organization_size = models.CharField(max_length=20, blank=True, null=True)
-    timezone = models.CharField(max_length=255, default="UTC", choices=TIMEZONE_CHOICES)
+    timezone = models.CharField(max_length=255, default="UTC", choices=timezone_choices)
     background_color = models.CharField(max_length=255, default=get_random_color)
 
     def __str__(self):

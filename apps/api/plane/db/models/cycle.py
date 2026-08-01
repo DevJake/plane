@@ -2,14 +2,12 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-# Python imports
-import pytz
-
 # Django imports
 from django.conf import settings
 from django.db import models
 
 # Module imports
+from .base import timezone_choices
 from .project import ProjectBaseModel
 
 
@@ -75,8 +73,7 @@ class Cycle(ProjectBaseModel):
     archived_at = models.DateTimeField(null=True)
     logo_props = models.JSONField(default=dict)
     # timezone
-    TIMEZONE_CHOICES = tuple(zip(pytz.common_timezones, pytz.common_timezones))
-    timezone = models.CharField(max_length=255, default="UTC", choices=TIMEZONE_CHOICES)
+    timezone = models.CharField(max_length=255, default="UTC", choices=timezone_choices)
     version = models.IntegerField(default=1)
 
     class Meta:

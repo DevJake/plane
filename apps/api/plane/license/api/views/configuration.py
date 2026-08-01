@@ -12,7 +12,7 @@ from smtplib import (
 )
 
 # Django imports
-from django.core.mail import BadHeaderError, EmailMultiAlternatives, get_connection
+from django.core.mail import EmailMultiAlternatives, get_connection
 from django.db.models import Q, Case, When, Value
 
 # Third party imports
@@ -127,7 +127,7 @@ class EmailCredentialCheckEndpoint(BaseAPIView):
             )
             msg.send(fail_silently=False)
             return Response({"message": "Email successfully sent."}, status=status.HTTP_200_OK)
-        except BadHeaderError:
+        except ValueError:
             return Response({"error": "Invalid email header."}, status=status.HTTP_400_BAD_REQUEST)
         except SMTPAuthenticationError:
             return Response(

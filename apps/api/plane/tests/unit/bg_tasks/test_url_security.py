@@ -39,7 +39,7 @@ def _resp(status_code=200, headers=None, content=b"OK"):
 
 
 # ---------------------------------------------------------------------------
-# Cluster A — robust IP classification (verified on Python 3.12 semantics)
+# Cluster A — robust IP classification (verified on Python 3.14 semantics)
 # ---------------------------------------------------------------------------
 @pytest.mark.unit
 class TestIsBlockedIp:
@@ -52,7 +52,7 @@ class TestIsBlockedIp:
             "172.16.0.1",  # private
             "169.254.169.254",  # link-local / cloud metadata
             "0.0.0.0",  # unspecified
-            "100.64.0.1",  # CGNAT / shared (NOT is_private on py3.12!)
+            "100.64.0.1",  # CGNAT / shared (not is_private)
             "224.0.0.1",  # multicast
             "239.255.255.250",  # SSDP multicast
             "255.255.255.255",  # limited broadcast

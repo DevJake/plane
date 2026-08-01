@@ -49,7 +49,7 @@ class TestValidateUrlIp:
     @pytest.mark.parametrize(
         "ip",
         [
-            "100.64.0.1",  # CGNAT / shared address space (not is_private on 3.12)
+            "100.64.0.1",  # CGNAT / shared address space (not is_private)
             "224.0.0.1",  # multicast
             "0.0.0.0",  # unspecified
             "::ffff:169.254.169.254",  # IPv4-mapped cloud metadata

@@ -1,7 +1,8 @@
 # Django 4.2 → 5.2 Migration Plan (`apps/api`)
 
-> **Status:** ✅ Executed & verified on branch `chore/django-5.2-upgrade` · **Target:** Django **5.2.15 LTS** from **4.2.30 LTS**
-> **Scope:** `apps/api` (the only Django service in the monorepo) · **Strategy:** single coordinated PR, direct 4.2 → 5.2 jump · **Dependency policy:** opportunistic (latest stable, with evidence-based safe overrides)
+> **Historical status:** Executed and verified on branch `chore/django-5.2-upgrade`; the plan below records the Django 5.2.15 LTS migration from 4.2.30 LTS.
+>
+> **Current fork status:** The API now targets Python 3.14.4 and Django 6.0.7 through its frozen uv lock. The follow-up verification passed 516 tests without warnings, `manage.py check`, migration drift detection, and the complete migration history through `db.0123`.
 
 ---
 
@@ -15,7 +16,7 @@ The migration is therefore **almost entirely a coordinated third-party dependenc
 
 | Prerequisite | Django 5.2 requires | Plane has                       | Status |
 | ------------ | ------------------- | ------------------------------- | ------ |
-| Python       | ≥ 3.10              | 3.12.x (Docker + CI)            | ✅     |
+| Python       | ≥ 3.10              | 3.14.4 (Docker + CI)            | ✅     |
 | PostgreSQL   | ≥ 14 (drops PG 13)  | 15.7-alpine (all compose files) | ✅     |
 | DB adapter   | psycopg 3 preferred | psycopg 3.3.0                   | ✅     |
 
@@ -25,18 +26,18 @@ The migration is therefore **almost entirely a coordinated third-party dependenc
 
 ## Execution status — verified ✅
 
-Executed on branch `chore/django-5.2-upgrade` and verified in the containerized test harness (`docker-compose-test.yml`: `python:3.12.5-alpine`, Postgres 15.7, Valkey, RabbitMQ, MinIO).
+Executed on branch `chore/django-5.2-upgrade`; the current containerised test harness uses `python:3.14.4-alpine`, Postgres 15.7, Valkey, RabbitMQ, and MinIO.
 
-**Verification results (Django 5.2.15):**
+**Historical verification results (Django 5.2.15):**
 
-| Gate                                              | Result                                                                         |
-| ------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `pip install -r requirements/test.txt`            | ✅ resolves, no conflicts                                                      |
-| `manage.py check`                                 | ✅ "System check identified no issues"                                         |
-| `manage.py makemigrations --check --dry-run`      | ✅ no changes (after the state-only `0122` migration)                          |
-| `manage.py migrate` (full history on Postgres 15) | ✅ db `0001`→`0122`, `django_celery_beat`, `license`, `sessions` all applied   |
-| `pytest` (full suite)                             | ✅ **393 passed, 0 failed**                                                    |
-| `drf-spectacular` schema gen (0.29)               | ✅ generates (15.8k lines); only pre-existing `operationId` collision warnings |
+| Gate                                                | Result                                                                         |
+| --------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `uv sync --frozen --no-default-groups --group test` | ✅ resolves, no conflicts                                                      |
+| `manage.py check`                                   | ✅ "System check identified no issues"                                         |
+| `manage.py makemigrations --check --dry-run`        | ✅ no changes (after the state-only `0122` migration)                          |
+| `manage.py migrate` (full history on Postgres 15)   | ✅ db `0001`→`0122`, `django_celery_beat`, `license`, `sessions` all applied   |
+| `pytest` (full suite)                               | ✅ **393 passed, 0 failed**                                                    |
+| `drf-spectacular` schema gen (0.29)                 | ✅ generates (15.8k lines); only pre-existing `operationId` collision warnings |
 
 **Changes made beyond the dependency pins (each surfaced by verification):**
 
@@ -52,7 +53,7 @@ Executed on branch `chore/django-5.2-upgrade` and verified in the containerized 
 
 - **Service:** `apps/api` — Django + DRF + Celery (worker/beat) + Channels (ASGI http-only). No other Python/Django service exists in the repo.
 - **Django:** `4.2.30` (final 4.2 LTS line; 4.2 reaches EOL ~April 2026 — this upgrade is time-sensitive).
-- **Dependency files:** `requirements/base.txt`, `requirements/local.txt`, `requirements/production.txt`, `requirements/test.txt` (plain pip pins; **no lockfile** — edits are direct).
+- **Dependency files:** `pyproject.toml` contains exact direct pins, and `uv.lock` locks the complete environment; installs use frozen uv commands.
 - **Run surfaces:** `bin/docker-entrypoint-{api,worker,beat,migrator}.sh`. All four must be smoke-tested.
 - **Tests:** `pytest` + `pytest-django`, settings module `plane.settings.test`, run with `--reuse-db --nomigrations --strict-markers`.
 - **CI:** `pull-request-build-lint-api.yml` runs **ruff lint only** — it does **not** run the test suite. The pytest suite must be run manually/locally as the migration gate.
@@ -118,7 +119,7 @@ Policy: **latest stable**, with **evidence-based safe overrides** where "latest"
 | djangorestframework          | 3.15.2  | **3.17.1**                       | 3.16.0      | 3.15 supports Django only ≤5.0. Verify `UniqueTogetherValidator`/conditional-`UniqueConstraint` behavior (3.16 tightened nullable/partial handling).                                                    |
 | channels                     | 4.1.0   | **4.3.2**                        | 4.2.1       | 4.3 raises `asgiref>=3.9` (auto-resolved) and makes Daphne an optional extra — Plane serves ASGI via uvicorn/gunicorn, so no impact.                                                                    |
 | django-cors-headers          | 4.3.1   | **4.9.0**                        | 4.7.0       | No consumer-facing breaking changes in range. Verify `CORS_ALLOWED_ORIGINS`/`CORS_ALLOW_ALL_ORIGINS` still load.                                                                                        |
-| django-filter                | 24.2    | **25.2**                         | 25.1        | 25.x removed built-in DRF schema gen (Plane uses drf-spectacular → no impact). 25.2 requires Python ≥3.10 (have 3.12).                                                                                  |
+| django-filter                | 24.2    | **25.2**                         | 25.1        | 25.x removed built-in DRF schema gen (Plane uses drf-spectacular → no impact). 25.2 requires Python ≥3.10 (have 3.14).                                                                                  |
 | django-storages              | 1.14.2  | **1.14.6**                       | 1.14.6      | `url_protocol` defaults to **HTTPS** when unset (1.14.6); `config`→`client_config` deprecation. Verify S3 settings + generated URL scheme.                                                              |
 | django-redis                 | 5.4.0   | **7.0.0**                        | 6.0.0       | 7.0 renamed zset/hash helper params (not used by Plane) and drops Django 5.0 (irrelevant). **Verify redis-py floor** (`redis==5.0.4`) satisfies 7.0; if not, pin **6.0.0** instead.                     |
 | django_celery_beat           | 2.6.0   | **2.9.0**                        | 2.8.1       | **Skip 2.8.0** (shipped a regression, fixed in 2.8.1). 2.9 adds Django 6.0.                                                                                                                             |
@@ -126,7 +127,7 @@ Policy: **latest stable**, with **evidence-based safe overrides** where "latest"
 | drf-spectacular              | 0.28.0  | **0.29.0**                       | 0.29.0      | First version with the Django 5.2 classifier. **Regenerate & commit the OpenAPI schema** after upgrade.                                                                                                 |
 | scout-apm                    | 3.1.0   | **3.5.3**                        | 3.5.0       | Additive; no consumer breaking changes.                                                                                                                                                                 |
 | django-debug-toolbar _(dev)_ | 4.3.0   | **6.0.0** (not 7.0.0)            | 5.1.0       | **Override:** 7.0 drops Django 4.2 and moves to shadow-DOM rendering (can break custom panels/CSS). 6.0 gives the widest window. Dev-only.                                                              |
-| pytest-django _(test)_       | 4.5.2   | **4.12.0**                       | 4.11.0      | 4.12 needs Python ≥3.10 (have 3.12) and adds Django 6.0. `pytest==9.0.3` already satisfies its floor.                                                                                                   |
+| pytest-django _(test)_       | 4.5.2   | **4.12.0**                       | 4.11.0      | 4.12 needs Python ≥3.10 (have 3.14) and adds Django 6.0. `pytest==9.0.3` already satisfies its floor.                                                                                                   |
 
 ### 5.2 Already 5.2-compatible — opportunistic patch bumps
 
@@ -155,11 +156,11 @@ Policy: **latest stable**, with **evidence-based safe overrides** where "latest"
 > Single PR. Treat the deprecation-warning audit as part of the test phase (folds the "run on 4.2 first" safety net into the 5.2 verification).
 
 1. **Branch.** `git checkout -b chore/<work-item-id>-django-5.2-upgrade` off `preview`. Include this plan doc in the branch.
-2. **Edit `requirements/base.txt`** per §5.1 + §5.2 (Django, DRF, channels, cors-headers, filter, storages, redis, celery-beat, celery-results, drf-spectacular, scout-apm, psycopg ×3, whitenoise, celery, dj-database-url). Leave the OTel set, django-crum, pytz untouched.
-3. **Edit `requirements/local.txt`** → `django-debug-toolbar==6.0.0`.
-4. **Edit `requirements/test.txt`** → `pytest-django==4.12.0`.
+2. **Edit the main `project.dependencies` pins in `pyproject.toml`** per §5.1 + §5.2 (Django, DRF, channels, cors-headers, filter, storages, redis, celery-beat, celery-results, drf-spectacular, scout-apm, psycopg ×3, whitenoise, celery, dj-database-url). Leave the OTel set, django-crum, pytz untouched.
+3. **Edit the `local` dependency group** → `django-debug-toolbar==6.0.0`.
+4. **Edit the `test` dependency group** → `pytest-django==4.12.0`, then refresh `uv.lock`.
 5. **(Optional)** apply §4.2 hardening (`FORMS_URLFIELD_ASSUME_HTTPS`, STORAGES collapse, asgi.py cleanup).
-6. **Clean install** in a fresh venv / rebuilt image: `pip install -r requirements/test.txt` (pulls base+test). Resolve any pip conflicts here (esp. redis-py ↔ django-redis, asgiref ↔ channels, kombu ↔ celery).
+6. **Clean install** in a fresh environment / rebuilt image: `uv sync --frozen --no-default-groups --group test` (installs the main and test dependencies). Resolve any uv conflicts here (especially redis-py ↔ django-redis, asgiref ↔ channels, and kombu ↔ celery).
 7. **Model state check:** `python manage.py makemigrations --check --dry-run` → expect **no new migrations**. If Django 5.x wants migrations, inspect before committing.
 8. **Apply third-party migrations:** `python manage.py migrate` on a scratch DB (django_celery_results 2.6.0 and django_celery_beat ship their own migrations).
 9. **Deprecation-warning audit:** run the suite with warnings as errors to catch any `RemovedInDjango60Warning` / `RemovedInDjango61Warning`:
@@ -174,7 +175,7 @@ Policy: **latest stable**, with **evidence-based safe overrides** where "latest"
 
 ## 7. Acceptance criteria / verification checklist
 
-- [ ] `pip install -r requirements/test.txt` resolves with no conflicts.
+- [ ] `uv sync --frozen --no-default-groups --group test` resolves with no conflicts.
 - [ ] `manage.py makemigrations --check --dry-run` → no new app migrations.
 - [ ] `manage.py migrate` applies django_celery_results / django_celery_beat migrations cleanly.
 - [ ] `manage.py check --deploy` passes.
@@ -187,21 +188,21 @@ Policy: **latest stable**, with **evidence-based safe overrides** where "latest"
 
 ## 8. Rollback plan
 
-- The change is **pip-pins + (optionally) a few settings lines**, all in one PR → revert the PR / commit to restore Django 4.2.30. No data migration is destructive: the only schema changes come from `django_celery_results`/`django_celery_beat`, which are additive (new indexes/columns) and safe to leave in place even on a rollback.
-- Keep the pre-upgrade `requirements/*.txt` recoverable via git. Rebuild the image from the reverted requirements.
+- The change is **dependency pins + lockfile + (optionally) a few settings lines**, all in one PR → revert the PR / commit to restore Django 4.2.30. No data migration is destructive: the only schema changes come from `django_celery_results`/`django_celery_beat`, which are additive (new indexes/columns) and safe to leave in place even on a rollback.
+- Keep the pre-upgrade `pyproject.toml` and `uv.lock` recoverable via git. Rebuild the image from the reverted lockfile.
 
 ---
 
 ## 9. Risks & mitigations
 
-| Risk                                                                                       | Likelihood                    | Mitigation                                                                                  |
-| ------------------------------------------------------------------------------------------ | ----------------------------- | ------------------------------------------------------------------------------------------- |
-| Pip dependency-resolution conflict (redis-py↔django-redis, asgiref↔channels, kombu↔celery) | Medium                        | Resolve at step 6 in a clean env; fall back to the "Min for 5.2" pins in §5.1.              |
-| DRF 3.16+ unique-constraint validation surfaces previously-silent errors                   | Low–Med                       | Covered by test suite + serializer tests; review any new 400s on create/update endpoints.   |
-| django-storages 1.14.6 URL scheme flips to HTTPS                                           | Low                           | Verify generated asset URLs in the api smoke test; set `url_protocol` explicitly if needed. |
-| drf-spectacular 0.29 schema output drift                                                   | Low                           | Regenerate + review the committed schema diff (step 11).                                    |
-| Celery beat/results migrations not run in deploy                                           | Low                           | `migrator` entrypoint runs `migrate`; explicit step 8 + acceptance check.                   |
-| Self-hosters on PostgreSQL < 14                                                            | Low (shipped compose is 15.7) | Note PG 14+ requirement in release notes/changelog.                                         |
+| Risk                                                                                      | Likelihood                    | Mitigation                                                                                  |
+| ----------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------- |
+| uv dependency-resolution conflict (redis-py↔django-redis, asgiref↔channels, kombu↔celery) | Medium                        | Resolve at step 6 in a clean environment; fall back to the "Min for 5.2" pins in §5.1.      |
+| DRF 3.16+ unique-constraint validation surfaces previously-silent errors                  | Low–Med                       | Covered by test suite + serializer tests; review any new 400s on create/update endpoints.   |
+| django-storages 1.14.6 URL scheme flips to HTTPS                                          | Low                           | Verify generated asset URLs in the api smoke test; set `url_protocol` explicitly if needed. |
+| drf-spectacular 0.29 schema output drift                                                  | Low                           | Regenerate + review the committed schema diff (step 11).                                    |
+| Celery beat/results migrations not run in deploy                                          | Low                           | `migrator` entrypoint runs `migrate`; explicit step 8 + acceptance check.                   |
+| Self-hosters on PostgreSQL < 14                                                           | Low (shipped compose is 15.7) | Note PG 14+ requirement in release notes/changelog.                                         |
 
 ---
 

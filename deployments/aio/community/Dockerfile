@@ -16,7 +16,9 @@ FROM makeplane/plane-proxy:${PLANE_VERSION} AS proxy-img
 # **************************************************
 #  STAGE 1: Runner
 # **************************************************
-FROM python:3.12.10-alpine AS runner
+FROM backend-img AS runner
+
+COPY --from=ghcr.io/astral-sh/uv:0.12.1 /uv /uvx /bin/
 
 WORKDIR /app
 
@@ -42,12 +44,13 @@ COPY --from=proxy-img /usr/bin/caddy /usr/bin/caddy
 COPY dist/Caddyfile /app/proxy/Caddyfile
 
 COPY --from=backend-img /code /app/backend
-COPY --from=backend-img /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
-COPY --from=backend-img /usr/local/bin/ /usr/local/bin/
 
 RUN apk add --no-cache nss-tools bash curl uuidgen ncdu vim
 
-RUN pip install supervisor
+COPY pyproject.toml uv.lock ./
+RUN uv export --frozen --no-default-groups --no-emit-project --output-file /tmp/plane-aio.lock \
+    && uv pip install --system --strict --compile-bytecode --no-cache --requirements /tmp/plane-aio.lock \
+    && rm /tmp/plane-aio.lock
 RUN mkdir -p /etc/supervisor/conf.d
 
 COPY start.sh /app/start.sh

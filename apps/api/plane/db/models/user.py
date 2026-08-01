@@ -7,7 +7,6 @@ import random
 import string
 import uuid
 
-import pytz
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 
 # Django imports
@@ -18,6 +17,7 @@ from django.utils import timezone
 
 # Module imports
 from plane.db.models import FileAsset
+from .base import timezone_choices
 from ..mixins import TimeAuditModel
 from plane.utils.color import get_random_color
 
@@ -116,8 +116,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     bot_type = models.CharField(max_length=30, verbose_name="Bot Type", blank=True, null=True)
 
     # timezone
-    USER_TIMEZONE_CHOICES = tuple(zip(pytz.common_timezones, pytz.common_timezones))
-    user_timezone = models.CharField(max_length=255, default="UTC", choices=USER_TIMEZONE_CHOICES)
+    user_timezone = models.CharField(max_length=255, default="UTC", choices=timezone_choices)
 
     # email validation
     is_email_valid = models.BooleanField(default=False)

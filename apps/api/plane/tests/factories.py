@@ -4,6 +4,7 @@
 
 import factory
 from uuid import uuid4
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 
 from plane.db.models import User, Workspace, WorkspaceMember, Project, ProjectMember
@@ -18,7 +19,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     id = factory.LazyFunction(uuid4)
     email = factory.Sequence(lambda n: f"user{n}@plane.so")
-    password = factory.PostGenerationMethodCall("set_password", "password")
+    password = factory.LazyFunction(lambda: make_password("password"))
     first_name = factory.Sequence(lambda n: f"First{n}")
     last_name = factory.Sequence(lambda n: f"Last{n}")
     is_active = True

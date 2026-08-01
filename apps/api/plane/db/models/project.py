@@ -3,7 +3,6 @@
 # See the LICENSE file for details.
 
 # Python imports
-import pytz
 from uuid import uuid4
 from enum import Enum
 
@@ -16,7 +15,7 @@ from django.db.models import Q
 # Module imports
 from plane.db.mixins import AuditModel
 
-from .base import BaseModel
+from .base import BaseModel, timezone_choices
 
 ROLE_CHOICES = ((20, "Admin"), (15, "Member"), (5, "Guest"))
 
@@ -113,8 +112,7 @@ class Project(BaseModel):
     default_state = models.ForeignKey("db.State", on_delete=models.SET_NULL, null=True, related_name="default_state")
     archived_at = models.DateTimeField(null=True)
     # timezone
-    TIMEZONE_CHOICES = tuple(zip(pytz.common_timezones, pytz.common_timezones))
-    timezone = models.CharField(max_length=255, default="UTC", choices=TIMEZONE_CHOICES)
+    timezone = models.CharField(max_length=255, default="UTC", choices=timezone_choices)
     # external_id for imports
     external_source = models.CharField(max_length=255, null=True, blank=True)
     external_id = models.CharField(max_length=255, blank=True, null=True)

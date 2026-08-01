@@ -131,14 +131,16 @@ services:
         condition: service_healthy
       test-minio:
         condition: service_healthy
-    # Install test-only requirements (not in local.txt) then exec pytest.
+    # Install the locked test dependency group, then exec pytest.
     # Any args passed via `docker compose run api-tests <args>` replace the default command.
     entrypoint:
       - /bin/sh
       - -c
       - |
         set -e
-        pip install --no-cache-dir -r requirements/test.txt
+        uv export --frozen --no-default-groups --group test --no-emit-project --output-file /tmp/plane-api-test.lock
+        uv pip install --system --strict --compile-bytecode --no-cache --requirements /tmp/plane-api-test.lock
+        rm /tmp/plane-api-test.lock
         # STATIC_ROOT must exist or Django's static middleware emits a
         # UserWarning on every request (~100 of the warnings in test runs).
         mkdir -p plane/static-assets/collected-static

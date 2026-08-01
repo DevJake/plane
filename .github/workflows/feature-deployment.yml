@@ -116,11 +116,6 @@ jobs:
       KUBE_CONFIG_FILE: ${{ secrets.FEATURE_PREVIEW_KUBE_CONFIG }}
       DEPLOYMENT_NAME: ${{ needs.branch_build_setup.outputs.flat_branch_name }}
     steps:
-      - name: Install AWS cli
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install awscli
       - name: Tailscale
         uses: tailscale/github-action@v4
         with:
