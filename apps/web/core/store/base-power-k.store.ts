@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { observable, action, makeObservable } from "mobx";
+import { action, makeObservable, observable, observableRef } from "mobx";
 // plane imports
 import type { EIssuesStoreType } from "@plane/types";
 // components
@@ -48,13 +48,13 @@ export class BasePowerKStore implements IBasePowerKStore {
   constructor() {
     makeObservable(this, {
       // observable
-      isPowerKModalOpen: observable.ref,
-      isShortcutsListModalOpen: observable.ref,
-      commandRegistry: observable.ref,
+      isPowerKModalOpen: observableRef,
+      isShortcutsListModalOpen: observableRef,
+      commandRegistry: observableRef,
       activeContext: observable,
       activePage: observable,
-      topNavInputRef: observable.ref,
-      topNavSearchInputRef: observable.ref,
+      topNavInputRef: observableRef,
+      topNavSearchInputRef: observableRef,
       // toggle actions
       togglePowerKModal: action,
       toggleShortcutsListModal: action,
