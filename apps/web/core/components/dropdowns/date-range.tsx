@@ -280,7 +280,7 @@ export const DateRangeDropdown = observer(function DateRangeDropdown(props: Prop
           showOutsideDays
           fixedWeeks
           weekStartsOn={startOfWeek}
-          initialFocus
+          autoFocus
         />
       </div>
     </Combobox.Options>
