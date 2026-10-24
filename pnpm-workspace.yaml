@@ -115,7 +115,7 @@ catalog:
   "helmet": "8.3.0"
   "highlight.js": "11.12.0"
   "husky": "9.1.7"
-  "i18next": "25.10.10"
+  "i18next": "26.5.7"
   "i18next-icu": "2.6.1"
   "i18next-resources-to-backend": "1.2.3"
   "ioredis": "6.0.0"
@@ -147,7 +147,7 @@ catalog:
   "react-dropzone": "14.4.1"
   "react-fast-compare": "3.2.2"
   "react-hook-form": "7.90.0"
-  "react-i18next": "16.6.6"
+  "react-i18next": "17.1.5"
   "react-is": "18.3.1"
   "react-markdown": "8.0.7"
   "react-masonry-component": "6.3.0"
@@ -245,3 +245,6 @@ allowBuilds:
   turbo: true
   sharp: false
 
+minimumReleaseAgeExclude:
+  - i18next@26.5.7
+  - react-i18next@17.1.5

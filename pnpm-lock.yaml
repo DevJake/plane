@@ -322,8 +322,8 @@ catalogs:
       specifier: 9.1.7
       version: 9.1.7
     i18next:
-      specifier: 25.10.10
-      version: 25.10.10
+      specifier: 26.5.7
+      version: 26.5.7
     i18next-icu:
       specifier: 2.6.1
       version: 2.6.1
@@ -412,8 +412,8 @@ catalogs:
       specifier: 7.90.0
       version: 7.90.0
     react-i18next:
-      specifier: 16.6.6
-      version: 16.6.6
+      specifier: 17.1.5
+      version: 17.1.5
     react-is:
       specifier: 18.3.1
       version: 18.3.1
@@ -1482,7 +1482,7 @@ importers:
     dependencies:
       i18next:
         specifier: 'catalog:'
-        version: 25.10.10(typescript@7.0.2)
+        version: 26.5.7(typescript@7.0.2)
       i18next-icu:
         specifier: 'catalog:'
         version: 2.6.1(intl-messageformat@12.1.4)
@@ -1494,7 +1494,7 @@ importers:
         version: 18.3.1
       react-i18next:
         specifier: 'catalog:'
-        version: 16.6.6(i18next@25.10.10(typescript@7.0.2))(react@18.3.1)(typescript@7.0.2)
+        version: 17.1.5(i18next@26.5.7(typescript@7.0.2))(react@18.3.1)(typescript@7.0.2)
     devDependencies:
       '@plane/typescript-config':
         specifier: workspace:*
@@ -7011,8 +7011,8 @@ packages:
     engines: {node: '>=12'}
     hasBin: true
 
-  html-parse-stringify@3.1.0:
-    resolution: {integrity: sha512-E0oAXcELOtsXe+BmpJ2EZyedbldPpriV5vICzEuo6xjC/D1lDukOI7KrpfQGF2Qc4wWEy0nk3bFORS2K5ZAhFQ==}
+  html-parse-stringify@4.0.1:
+    resolution: {integrity: sha512-0zHsZJrK7S3K2aucXWL6ycoYJ/iNtIcFHC/nYQgFklPtrv5LpJctIiSCroWZWeuoXvuyFdzp6KzjJQ+OT5MfFw==}
 
   html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
@@ -7064,8 +7064,8 @@ packages:
   i18next-resources-to-backend@1.2.3:
     resolution: {integrity: sha512-8Y/LLAm5fqZc2ckQxtTWbu75ndjNLzF7mcYl6rhc4g+WBopIsG3YhdYqF5qhJy64tlYhlU2KSSnEgW3gGHLqwg==}
 
-  i18next@25.10.10:
-    resolution: {integrity: sha512-cqUW2Z3EkRx7NqSyywjkgCLK7KLCL6IFVFcONG7nVYIJ3ekZ1/N5jUsihHV6Bq37NfhgtczxJcxduELtjTwkuQ==}
+  i18next@26.5.7:
+    resolution: {integrity: sha512-mY9cECbKtiOqpcB8d8ijNsiPZQoTFULehBlWXZzzURpTm9aLbE2c3T2FKdGZhdEjlTvXUGd0TvCisL06YafO0Q==}
     peerDependencies:
       typescript: 7.0.2
     peerDependenciesMeta:
@@ -8647,10 +8647,10 @@ packages:
       '@types/react':
         optional: true
 
-  react-i18next@16.6.6:
-    resolution: {integrity: sha512-ZgL2HUoW34UKUkOV7uSQFE1CDnRPD+tCR3ywSuWH7u2iapnz86U8Bi3Vrs620qNDzCf1F47NxglCEkchCTDOHw==}
+  react-i18next@17.1.5:
+    resolution: {integrity: sha512-dRSwnd2pACasvcZXR+uP+60vW61CJKw9ZUM12B4ZucrY9SEIIsLBWgpo8UneOUXQcUtvjQmHMeOJ03Vursl1Ag==}
     peerDependencies:
-      i18next: '>= 25.10.9'
+      i18next: '>= 26.2.0'
       react: '>= 16.8.0'
       react-dom: '*'
       react-native: '*'
@@ -9723,10 +9723,6 @@ packages:
         optional: true
       jsdom:
         optional: true
-
-  void-elements@3.1.0:
-    resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
-    engines: {node: '>=0.10.0'}
 
   w3c-keyname@2.2.8:
     resolution: {integrity: sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ==}
@@ -14613,9 +14609,7 @@ snapshots:
       relateurl: 0.2.7
       terser: 5.51.2
 
-  html-parse-stringify@3.1.0:
-    dependencies:
-      void-elements: 3.1.0
+  html-parse-stringify@4.0.1: {}
 
   html-void-elements@3.0.0: {}
 
@@ -14672,9 +14666,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.10
 
-  i18next@25.10.10(typescript@7.0.2):
-    dependencies:
-      '@babel/runtime': 7.29.10
+  i18next@26.5.7(typescript@7.0.2):
     optionalDependencies:
       typescript: 7.0.2
 
@@ -16553,11 +16545,11 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.31
 
-  react-i18next@16.6.6(i18next@25.10.10(typescript@7.0.2))(react@18.3.1)(typescript@7.0.2):
+  react-i18next@17.1.5(i18next@26.5.7(typescript@7.0.2))(react@18.3.1)(typescript@7.0.2):
     dependencies:
       '@babel/runtime': 7.29.10
-      html-parse-stringify: 3.1.0
-      i18next: 25.10.10(typescript@7.0.2)
+      html-parse-stringify: 4.0.1
+      i18next: 26.5.7(typescript@7.0.2)
       react: 18.3.1
       use-sync-external-store: 1.7.0(react@18.3.1)
     optionalDependencies:
@@ -17748,8 +17740,6 @@ snapshots:
       '@vitest/coverage-v8': 5.0.5(vitest@5.0.5)
     transitivePeerDependencies:
       - msw
-
-  void-elements@3.1.0: {}
 
   w3c-keyname@2.2.8: {}
 
