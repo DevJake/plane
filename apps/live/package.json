@@ -44,6 +44,7 @@
     "@react-pdf/types": "catalog:",
     "@tiptap/core": "catalog:",
     "@tiptap/html": "catalog:",
+    "@tiptap/pm": "catalog:",
     "axios": "catalog:",
     "compression": "catalog:",
     "cors": "catalog:",
