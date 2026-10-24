@@ -45,8 +45,8 @@ export class DocumentController {
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const validationErrors = error.errors.map((err) => ({
-          path: err.path.join("."),
+        const validationErrors = error.issues.map((err) => ({
+          path: err.path.map(String).join("."),
           message: err.message,
         }));
         logger.error("DOCUMENT_CONTROLLER: Validation error", {
