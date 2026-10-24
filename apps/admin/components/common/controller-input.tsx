@@ -5,7 +5,6 @@
  */
 
 import React, { useState } from "react";
-import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 // icons
 import { Eye, EyeOff } from "lucide-react";
@@ -14,7 +13,9 @@ import { Input } from "@plane/ui";
 import { cn } from "@plane/utils";
 
 type Props = {
-  control: Control<any>;
+  // react-hook-form >=7.7x made `Control` invariant in its form values, so callers with differently typed forms cannot share one
+  // concrete `Control<...>`.
+  control: any;
   type: "text" | "password";
   name: string;
   label: string;

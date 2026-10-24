@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { Menu as BaseMenu } from "@base-ui-components/react/menu";
+import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { MoreHorizontal } from "lucide-react";
 import { ChevronDownIcon, ChevronRightIcon } from "../icons";
 import { cn } from "../utils/classname";
@@ -129,9 +129,10 @@ function Menu(props: TMenuProps) {
   };
 
   return (
-    <BaseMenu.Root openOnHover={openOnHover} onOpenChange={handleOpenChange}>
+    <BaseMenu.Root onOpenChange={handleOpenChange}>
       {customButton ? (
         <BaseMenu.Trigger
+          openOnHover={openOnHover}
           type="button"
           onClick={handleMenuButtonClick}
           className={cn(customButtonClassName, "outline-none")}
@@ -145,6 +146,7 @@ function Menu(props: TMenuProps) {
         <>
           {ellipsis || verticalEllipsis ? (
             <BaseMenu.Trigger
+              openOnHover={openOnHover}
               type="button"
               onClick={handleMenuButtonClick}
               disabled={disabled}
@@ -158,6 +160,7 @@ function Menu(props: TMenuProps) {
             </BaseMenu.Trigger>
           ) : (
             <BaseMenu.Trigger
+              openOnHover={openOnHover}
               type="button"
               className={`flex items-center justify-between gap-1 rounded-md px-2.5 py-1 text-11 whitespace-nowrap duration-300 outline-none ${
                 isOpen ? "bg-surface-2 text-primary" : "text-secondary"

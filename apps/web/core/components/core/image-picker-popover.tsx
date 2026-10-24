@@ -8,7 +8,6 @@ import React, { useState, useRef, useCallback, useMemo } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { useDropzone } from "react-dropzone";
-import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import useSWR from "swr";
 import { Popover } from "@headlessui/react";
@@ -37,7 +36,9 @@ type TTabOption = {
 type Props = {
   label: string | React.ReactNode;
   value: string | null;
-  control: Control<any>;
+  // react-hook-form >=7.7x made `Control` invariant in its form values, so callers with differently typed forms cannot share one
+  // concrete `Control<...>`.
+  control: any;
   onChange: (data: string) => void;
   disabled?: boolean;
   tabIndex?: number;

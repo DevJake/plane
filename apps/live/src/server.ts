@@ -10,7 +10,6 @@ import compression from "compression";
 import cors from "cors";
 import type { Express, Request, Response, Router } from "express";
 import express from "express";
-import expressWs from "express-ws";
 import helmet from "helmet";
 // plane imports
 import { registerController } from "@plane/decorators";
@@ -23,18 +22,22 @@ import { env } from "@/env";
 import { HocusPocusServerManager } from "@/hocuspocus";
 // redis
 import { redisManager } from "@/redis";
+// websocket routing
+import { WebSocketRouter } from "@/lib/ws-router";
 
 export class Server {
   private app: Express;
   private router: Router;
+  private wsRouter: WebSocketRouter;
   private hocuspocusServer: Hocuspocus | undefined;
   private httpServer: HttpServer | undefined;
 
   constructor() {
     this.app = express();
-    expressWs(this.app);
+    this.wsRouter = new WebSocketRouter(env.LIVE_BASE_PATH);
     this.setupMiddleware();
-    this.router = express.Router();
+    // the controller decorators register websocket routes through `router.ws`
+    this.router = Object.assign(express.Router(), { ws: this.wsRouter.ws });
     this.app.set("port", env.PORT || 3000);
     this.app.use(env.LIVE_BASE_PATH, this.router);
   }
@@ -101,9 +104,11 @@ export class Server {
         logger.error("SERVER: Failed to start server:", err);
         throw err;
       });
+    this.wsRouter.attach(this.httpServer);
   }
 
   public async destroy() {
+    this.wsRouter.close();
     if (this.hocuspocusServer) {
       this.hocuspocusServer.closeConnections();
       logger.info("SERVER: HocusPocus connections closed gracefully.");

@@ -5,7 +5,7 @@
  */
 
 // mobx
-import { action, observable, makeObservable, computed, runInAction } from "mobx";
+import { action, computed, makeObservable, observable, observableRef, runInAction } from "mobx";
 import { computedFn } from "mobx-utils";
 // types
 import type { IWebhook } from "@plane/types";
@@ -53,7 +53,7 @@ export class WebhookStore implements IWebhookStore {
     makeObservable(this, {
       // observables
       webhooks: observable,
-      webhookSecretKey: observable.ref,
+      webhookSecretKey: observableRef,
       // computed
       currentWebhook: computed,
       // fetch actions

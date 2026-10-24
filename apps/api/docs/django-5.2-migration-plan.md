@@ -2,7 +2,7 @@
 
 > **Historical status:** Executed and verified on branch `chore/django-5.2-upgrade`; the plan below records the Django 5.2.15 LTS migration from 4.2.30 LTS.
 >
-> **Current fork status:** The API now targets Python 3.14.4 and Django 6.0.7 through its frozen uv lock. The follow-up verification passed 516 tests without warnings, `manage.py check`, migration drift detection, and the complete migration history through `db.0123`.
+> **Current fork status:** The API now targets Python 3.14.9 and Django 6.0.9 through its frozen uv lock. The follow-up verification passed 516 tests without warnings, `manage.py check`, migration drift detection, and the complete migration history through `db.0123`.
 
 ---
 
@@ -16,7 +16,7 @@ The migration is therefore **almost entirely a coordinated third-party dependenc
 
 | Prerequisite | Django 5.2 requires | Plane has                       | Status |
 | ------------ | ------------------- | ------------------------------- | ------ |
-| Python       | ≥ 3.10              | 3.14.4 (Docker + CI)            | ✅     |
+| Python       | ≥ 3.10              | 3.14.9 (Docker + CI)            | ✅     |
 | PostgreSQL   | ≥ 14 (drops PG 13)  | 15.7-alpine (all compose files) | ✅     |
 | DB adapter   | psycopg 3 preferred | psycopg 3.3.0                   | ✅     |
 
@@ -26,7 +26,7 @@ The migration is therefore **almost entirely a coordinated third-party dependenc
 
 ## Execution status — verified ✅
 
-Executed on branch `chore/django-5.2-upgrade`; the current containerised test harness uses `python:3.14.4-alpine`, Postgres 15.7, Valkey, RabbitMQ, and MinIO.
+Executed on branch `chore/django-5.2-upgrade`; the current containerised test harness uses `python:3.14.9-alpine`, Postgres 15.19, Valkey 7.2.14, RabbitMQ 3.13.7, and MinIO.
 
 **Historical verification results (Django 5.2.15):**
 

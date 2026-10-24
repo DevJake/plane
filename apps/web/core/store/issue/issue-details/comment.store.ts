@@ -5,7 +5,7 @@
  */
 
 import { pull, concat, update, uniq, set } from "lodash-es";
-import { action, makeObservable, observable, runInAction } from "mobx";
+import { action, makeObservable, observable, observableRef, runInAction } from "mobx";
 // Plane Imports
 import type { TIssueComment, TIssueCommentMap, TIssueCommentIdMap, TIssueServiceType } from "@plane/types";
 // services
@@ -62,7 +62,7 @@ export class IssueCommentStore implements IIssueCommentStore {
   constructor(rootStore: IIssueDetail, serviceType: TIssueServiceType) {
     makeObservable(this, {
       // observables
-      loader: observable.ref,
+      loader: observableRef,
       comments: observable,
       commentMap: observable,
       // actions

@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { Combobox as BaseCombobox } from "@base-ui-components/react/combobox";
+import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { SearchIcon } from "../icons";
 import { cn } from "../utils/classname";
 
@@ -74,10 +74,10 @@ function ComboboxRoot({
   children,
 }: ComboboxProps) {
   const handleValueChange = React.useCallback(
-    (newValue: string | string[]) => {
-      onValueChange?.(newValue);
+    (newValue: string | string[] | null) => {
+      onValueChange?.(newValue ?? (multiSelect ? [] : ""));
     },
-    [onValueChange]
+    [onValueChange, multiSelect]
   );
 
   return (
