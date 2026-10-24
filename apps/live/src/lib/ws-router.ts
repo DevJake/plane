@@ -12,7 +12,7 @@ import type { WebSocket } from "ws";
 type TWebSocketHandler = (ws: WebSocket, req: IncomingMessage) => void;
 
 const normalisePath = (path: string) => {
-  const trimmed = path.replace(/\/+$/, "");
+  const trimmed = path.replace(/\/{2,}/g, "/").replace(/\/+$/, "");
   return trimmed === "" ? "/" : trimmed;
 };
 
@@ -34,15 +34,30 @@ export class WebSocketRouter {
 
   /** Route HTTP upgrade requests on `server` to the registered handlers. */
   attach(server: Server): void {
+    // Node gives an upgrade handler the raw socket with no error handling, so anything thrown here would
+    // leak it; reject with a status line and destroy the socket instead.
+    const reject = (socket: Duplex, statusLine: string) => {
+      socket.write(`HTTP/1.1 ${statusLine}\r\nConnection: close\r\n\r\n`);
+      socket.destroy();
+    };
     server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
-      const { pathname } = new URL(req.url ?? "/", "http://localhost");
-      const handler = this.routes.get(normalisePath(pathname));
-      if (!handler) {
-        socket.write("HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n");
-        socket.destroy();
-        return;
+      try {
+        let pathname: string;
+        try {
+          ({ pathname } = new URL(req.url ?? "/", "http://localhost"));
+        } catch {
+          reject(socket, "400 Bad Request");
+          return;
+        }
+        const handler = this.routes.get(normalisePath(pathname));
+        if (!handler) {
+          reject(socket, "404 Not Found");
+          return;
+        }
+        this.wss.handleUpgrade(req, socket, head, (ws) => handler(ws, req));
+      } catch {
+        reject(socket, "500 Internal Server Error");
       }
-      this.wss.handleUpgrade(req, socket, head, (ws) => handler(ws, req));
     });
   }
 
