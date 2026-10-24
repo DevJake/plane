@@ -1,10 +1,10 @@
 ARG PLANE_VERSION=v0.27.1
-FROM --platform=$BUILDPLATFORM tonistiigi/binfmt AS binfmt
+FROM --platform=$BUILDPLATFORM tonistiigi/binfmt:qemu-v10.2.3@sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0 AS binfmt
 
 # **************************************************
 #  STAGE 0: Image Loading
 # **************************************************
-FROM node:22-alpine AS node
+FROM node:24.22.1-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS node
 
 FROM makeplane/plane-frontend:${PLANE_VERSION} AS web-img
 FROM makeplane/plane-backend:${PLANE_VERSION} AS backend-img
@@ -18,7 +18,7 @@ FROM makeplane/plane-proxy:${PLANE_VERSION} AS proxy-img
 # **************************************************
 FROM backend-img AS runner
 
-COPY --from=ghcr.io/astral-sh/uv:0.12.1 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.5@sha256:32a7bb39b496babbd997b0a39a4d66c126bdaf5661b302bf6f06abda8deca6ff /uv /uvx /bin/
 
 WORKDIR /app
 

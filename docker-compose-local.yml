@@ -1,6 +1,6 @@
 services:
   plane-redis:
-    image: valkey/valkey:7.2.11-alpine
+    image: valkey/valkey:7.2.14-alpine@sha256:c6c2f0020be34bbf684a53a0ef716ab16ff70295186d4d9f2518435beb7afbff
     restart: unless-stopped
     networks:
       - dev_env
@@ -10,7 +10,7 @@ services:
       - "6379:6379"
 
   plane-mq:
-    image: rabbitmq:3.13.6-management-alpine
+    image: rabbitmq:3.13.7-management-alpine@sha256:606d8c0d6b3c18d1da9afc53bc7cdb2a8d5486df91b5a9830e9e07626c9ae281
     restart: unless-stopped
     networks:
       - dev_env
@@ -49,7 +49,7 @@ services:
       - "9090:9090"
 
   plane-db:
-    image: postgres:15.7-alpine
+    image: postgres:15.19-alpine@sha256:a8e042598834300dfaa17a54f695b87b7f25d3490433bbbe2ef3bffbb9747f24
     restart: unless-stopped
     networks:
       - dev_env
